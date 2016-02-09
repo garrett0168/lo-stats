@@ -1,0 +1,60 @@
+
+<div style="font-family: 'Roboto', sans-serif; font-size: 14px; color: #52626F;">
+    <div style="text-align: right; font-size: 8pt; padding-bottom: 6px;">Updated on <?php echo $this->updated; ?></div>
+    <div style="display: inline-block; width: 100%;">
+        <div style="float:left; width: 33%;">
+            <div style="width: 220px;">
+                <h2>Locked Purchase Files</h2>
+                <div style="float:left; width: 50%;">
+                    Conv<br>
+                    FHA<br>
+                    VA<br>
+                    USDA<br>
+                </div>
+                <div style="float:left; width: 50%;">
+                    <?php echo $this->conv_purch; ?>
+                    <?php echo $this->fha_purch; ?>
+                    <?php echo $this->va_purch; ?>
+                    <?php echo $this->usda_purch; ?>
+                </div>
+            </div>
+        </div>
+        <div style="float:left; width: 33%;" align="center">
+            <div style="width: 220px;" align="left">
+                <h2>Locked Refinance Submissions</h2>
+                <div style="float:left; width: 50%;">
+                    Conv<br>
+                    FHA<br>
+                    VA<br>
+                    USDA<br>
+                </div>
+                <div style="float:left; width: 50%;">
+                    <?php echo $this->conv_ref; ?>
+                    <?php echo $this->fha_ref; ?>
+                    <?php echo $this->va_ref; ?>
+                    <?php echo $this->usda_ref; ?>
+                </div>
+            </div>
+        </div>
+        <div style="float:left; width: 33%;">
+            <div style="width: 220px;float:right;">
+                <h2>Locked Condition Submissions</h2>
+                <div style="float:left; width: 50%;">
+                    Conv<br>
+                    FHA<br>
+                    VA<br>
+                    USDA<br>
+                </div>
+                <div style="float:left; width: 50%;">
+                    <?php echo $this->conv_sub; ?>
+                    <?php echo $this->fha_sub; ?>
+                    <?php echo $this->va_sub; ?>
+                    <?php echo $this->usda_sub; ?>
+                </div>
+            </div>
+        </div>
+    </div><br><br>
+    <div style="font-size: 8pt;">
+        View <a style="text-decoration: none;" href="/whiteboard/all" target="_blank"><span style="color: #028ED2; text-decoration: none;">ALL</span></a>
+    </div>
+</div>

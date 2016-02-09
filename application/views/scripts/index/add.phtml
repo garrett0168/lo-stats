@@ -1,0 +1,55 @@
+<h2>Add Current Task</h2>
+
+<script>
+    $(function() {
+        $(".datepicker").datepicker({dateFormat: 'm/d/yy',
+            onSelect: function(dateText, inst) {
+                var d = $(this).datepicker("getDate");
+                var s = parseInt(d / 1000);
+                $("#selectedDate").text("on " + dateText + "");
+                $(".selectedDate2").text(s);
+            }
+        });
+    });
+</script>
+<?php echo $this->message; ?>
+<form action="/index/add" method="post">
+    <table cellpadding="8" border="0">
+        <thead>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Your Name</td>
+                <td>
+                    <select name="developer">
+                        <option>Alexander</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>
+                    <input type="text" class="datepicker fullfield" name="added_date" value="<?php echo $this->date_added; ?>"></td>
+            </tr>
+            <tr>
+                <td>Short description</td>
+                <td>
+                    <input type="text" name="description"></td>
+            </tr>
+            <tr>
+                <td>Stakeholder</td>
+                <td>
+                    <input type="text" name="stakeholder"></td>
+            </tr>
+            <!--tr>
+                <td>Requirement</td>
+                <td><input type="text" name="description">\</td>
+            </tr-->
+            <tr>
+                <td></td>
+                <td><input type="submit" name="Submit" value="Submit"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</form>
