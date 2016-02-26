@@ -1,10 +1,6 @@
 <?php
 
-include("../pChart2.1.2/class/pData.class.php");
-include("../pChart2.1.2/class/pDraw.class.php");
-include("../pChart2.1.2/class/pImage.class.php");
-
-class IndexController extends Zend_Controller_Action {
+class WholesaleController extends Zend_Controller_Action {
 
     public function init() {
         $this->config = new Zend_Config_Ini('../application/configs/application.ini', 'production');
@@ -13,12 +9,7 @@ class IndexController extends Zend_Controller_Action {
     }
 
     public function indexAction() {
-        $requestParams = $this->getRequest()->getParams();
-        if (isset($requestParams['wholesale'])) {
-            $this->_forward("mtd", "wholesale");
-        } else {
-            $this->_forward("mtd");
-        }
+        $this->_forward("mtd");
     }
 
     public function ytd10Action() {
@@ -43,7 +34,7 @@ class IndexController extends Zend_Controller_Action {
                             FROM
                             (SELECT SUM(LoanAmount) as la
                             ,[LOName], COUNT(LoanAmount) as lc
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by LOName) c
+                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel = 'Wholesale' group by LOName) c
                             ORder by la desc"); // limit 7
         $u = $sth->fetchAll();
         $amounts = array();
@@ -64,7 +55,7 @@ class IndexController extends Zend_Controller_Action {
                             FROM
                             (SELECT COUNT(LoanAmount) as lc
                             ,[LOName], SUM(LoanAmount) as la
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by LOName) c
+                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel = 'Wholesale' group by LOName) c
                             ORder by lc desc"); // limit 7
         $u = $sth->fetchAll();
         $amounts = array();
@@ -80,18 +71,16 @@ class IndexController extends Zend_Controller_Action {
 
     public function mtdAction() {
         $mtd = date('Y-m') . "-01 00:00:00.000";
-        $this->byamount($mtd, 'mtd');
-        $this->bycount($mtd, 'mtd');
-        $this->byloantype($mtd, 'mtd');
-        $this->bybranch($mtd, 'mtd');
+        $this->byamount($mtd, 'wholesalemtd');
+        $this->bycount($mtd, 'wholesalemtd');
+        $this->byloantype($mtd, 'wholesalemtd');
     }
 
     public function ytdAction() {
         $ytd = date('Y') . "-01-01 00:00:00.000";
-        $this->byamount($ytd, 'ytd');
-        $this->bycount($ytd, 'ytd');
-        $this->byloantype($ytd, 'ytd');
-        $this->bybranch($ytd, 'ytd');
+        $this->byamount($ytd, 'wholesaleytd');
+        $this->bycount($ytd, 'wholesaleytd');
+        $this->byloantype($ytd, 'wholesaleytd');
     }
 
     function byamount($t, $page) {
@@ -100,7 +89,7 @@ class IndexController extends Zend_Controller_Action {
                             FROM
                             (SELECT SUM(LoanAmount) as la
                             ,[LOName]
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by LOName) c
+                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel = 'Wholesale' group by LOName) c
                             ORder by la desc"); // limit 7
         $u = $sth->fetchAll();
         $amounts = array();
@@ -120,7 +109,7 @@ class IndexController extends Zend_Controller_Action {
                             FROM
                             (SELECT COUNT(LoanAmount) as la
                             ,[LOName]
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by LOName) c
+                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel = 'Wholesale' group by LOName) c
                             ORder by la desc"); // limit 7
         $u = $sth->fetchAll();
         $amounts = array();
@@ -140,7 +129,7 @@ class IndexController extends Zend_Controller_Action {
                             FROM
                             (SELECT SUM(LoanAmount) as la
                             ,[Loantype2]
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by Loantype2) c
+                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel = 'Wholesale' group by Loantype2) c
                             ORder by la desc"); // limit 7
         $u = $sth->fetchAll();
         $amounts = array();
@@ -152,26 +141,6 @@ class IndexController extends Zend_Controller_Action {
             array_push($amounts, round($l["la"] / 10000) / 100);
         }
         $this->displaychart("Type", "In \$MM", $amounts, $page);
-    }
-
-    function bybranch($t, $page) {
-        $dbh = $this->get_db_handle();
-        $sth = $dbh->query("SELECT top 7 *
-                            FROM
-                            (SELECT SUM(LoanAmount) as la
-                            ,[BranchName]
-                            FROM [StagingTables].[dbo].[vMarketing] where FundedDate >= '$t' and Channel != 'Wholesale' group by BranchName) c
-                            ORder by la desc"); // limit 7
-        $u = $sth->fetchAll();
-        $amounts = array();
-        $c = 0;
-        while ($u) {
-            $c++;
-            $l = array_shift($u);
-            $this->view->bybranch .= $c . " " . $l["BranchName"] . "<br>";
-            array_push($amounts, round($l["la"] / 1000000));
-        }
-        $this->displaychart("Branch", "In \$MM", $amounts, $page);
     }
 
     function display20chart($title, $units, $amounts, $page) {
